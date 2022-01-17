@@ -3,5 +3,5 @@
 
 * Installera SQL Server.
 * Kör script-filen everyloopmusic.sql som finns på denna sida.
-* Kontrollera att everyloop ligger på (localhost) servern.
+* Kontrollera att everyloopmusic ligger på (localhost) servern.
 * Kör programmet.
