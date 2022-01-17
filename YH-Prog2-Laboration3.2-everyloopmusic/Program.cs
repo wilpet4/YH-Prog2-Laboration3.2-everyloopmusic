@@ -1,19 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using YH_Prog2_Laboration3._2_everyloopmusic.Models;
+﻿using YH_Prog2_Laboration3._2_everyloopmusic.Models;
 
-MusicContext context = new MusicContext(); // kanske inte idiotiskt
-DatabaseHandler handler = new DatabaseHandler();
-
-// TESTER, TA BORT INNAN INLÄMNING
-var artistsWithThe = context.Artists.Where(a => a.Name.Contains("The "));
-var qq = context.PlaylistTracks.Where(i => i.PlaylistId < 2).ToList();
-foreach (var item in artistsWithThe) // TEST
-{
-    Console.WriteLine(item.Name);
-}
-Console.ReadKey();
-//
+MusicContext context = new MusicContext();
+DatabaseHandler handler = new DatabaseHandler(); // kanske inte idiotiskt
 
 bool isRunning = true;
 while (isRunning)
@@ -43,16 +31,15 @@ while (isRunning)
                         List<PlaylistTrack> tracksInPlaylist = handler.CountTracksInPlaylist(context, selectedPlaylist);
                         Console.Clear();
                         Console.WriteLine(selectedPlaylist.Name);
-                        Console.WriteLine($"[1] Lägg till låt i spellistan\n" + // NÄSTAN KLAR
-                                          $"[2] Ta bort låt i spellistan\n" +   // KLAR
-                                          $"[3] Ändra namn på spellistan\n" +   // KLAR
-                                          $"[4] Radera spellistan");            // KLAR
+                        Console.WriteLine($"[1] Lägg till låt i spellistan\n" +
+                                          $"[2] Ta bort låt i spellistan\n" +
+                                          $"[3] Ändra namn på spellistan\n" +
+                                          $"[4] Radera spellistan");
                         if (Int16.TryParse(Console.ReadLine(), out short playlistMenuInput))
                         {
                             switch (playlistMenuInput)
                             {
                                 case 1:
-                                    // TODO: Funktion för att söka och lägga till låt i spellistan.
                                     Console.Clear();
                                     Console.WriteLine(handler.OutputAllTracks(context));
                                     Console.Write("Vänligen mata in ID på den låt du vill ta bort: ");
@@ -71,7 +58,7 @@ while (isRunning)
                                     Console.Write("Vänligen mata in ID på den låt du vill ta bort: ");
                                     if (Int16.TryParse(Console.ReadLine(), out short trackToRemove) && trackToRemove <= tracksInPlaylist.Count() && trackToRemove > 0)
                                     { 
-                                        handler.RemoveTrackFromPlaylist(context, tracksInPlaylist[trackToRemove - 1]); // Borde fungera.
+                                        handler.RemoveTrackFromPlaylist(context, tracksInPlaylist[trackToRemove - 1]);
                                     }
                                     else
                                     {
@@ -88,6 +75,7 @@ while (isRunning)
                                     {                          // att läsa Max Length av en kolumn i databasen.
                                         selectedPlaylist.Name = newName;
                                         context.Update(selectedPlaylist);
+                                        context.SaveChanges();
                                         Console.WriteLine("Spellistan har nu döpts om.");
                                         Console.ReadKey();
                                     }

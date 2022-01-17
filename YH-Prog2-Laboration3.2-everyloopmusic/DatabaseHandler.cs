@@ -3,14 +3,6 @@ using YH_Prog2_Laboration3._2_everyloopmusic.Models;
 
 class DatabaseHandler
 {
-    public string GetConnectionString()
-    {
-        var builder = new ConfigurationBuilder()
-        .AddJsonFile($"appsettings.json", true, true);
-        string connectionString =
-        builder.Build().GetConnectionString("DefaultConnection");
-        return connectionString;
-    }
     public string OutputAllTracks(in MusicContext context)
     {
         List<string> listOfTracks = new List<string>();
@@ -27,32 +19,7 @@ class DatabaseHandler
         string result = String.Join("\n", listOfTracks);
         return result;
     }
-    public string CreateListOfTracks(in MusicContext context) // test metod
-    {
-        List<string> stringList = new List<string>();
-        var fk = from t in context.Tracks
-                 join g in context.Genres on t.GenreId equals g.GenreId
-                 join a in context.Albums on t.AlbumId equals a.AlbumId
-                 select new { t.Name, t.Composer, AlbumName = a.Title, Genre = g.Name };
-        fk.ToList();
-        foreach (var item in fk)
-        {
-            stringList.Add($"{item.Name} # {item.Composer} \n\t {item.AlbumName} \n\t {item.Genre}");
-        }
-        string result = String.Join("\n", stringList);
-        return result;
-    }
-    public string OutputAllPlaylists(in MusicContext context)
-    {
-        List<string> listOfPlaylists = new List<string>();
-        foreach (var item in context.Playlists)
-        {
-            listOfPlaylists.Add(item.Name);
-        }
-        string result = String.Join("\n", listOfPlaylists);
-        return result;
-    }
-    public List<string> FormatPlaylistSelection(in MusicContext context) //TODO: Bör byta item.PlaylistId till en index men måste då ändra andra delar av programmet.
+    public List<string> FormatPlaylistSelection(in MusicContext context)
     {
         List<string> listOfPlaylist = new List<string>();
         foreach (var item in context.Playlists)
@@ -112,7 +79,7 @@ class DatabaseHandler
     public void AddTrackToPlaylist(in MusicContext context, in Playlist playlist, short trackID)
     {
         Console.WriteLine($"Track nr: {trackID} is being added...");
-        var query = context.Tracks.Where(t => t.TrackId == trackID).First(); //EXECPTION: matade in 0 som trackID. // SEQUENCE CONTAINS NO ELEMENTS.
+        var query = context.Tracks.Where(t => t.TrackId == trackID).First();
         if (query == null)
         {
             ErrorMessage();
@@ -128,7 +95,7 @@ class DatabaseHandler
     {
         Console.WriteLine($"Playlist [{playlistName}] is being added...");
         var newPlaylist = new Playlist { Name = playlistName };
-        context.Playlists.Add(newPlaylist); // INDEX GÖR INTE AUTO_INCREMENT
+        context.Playlists.Add(newPlaylist);
         context.SaveChanges();
     }
     public void ErrorMessage()
@@ -137,5 +104,13 @@ class DatabaseHandler
         Console.WriteLine("Fel vid inmatning, försök igen!");
         Console.ReadKey();
         Console.ForegroundColor= ConsoleColor.White;
+    }
+    public string GetConnectionString()
+    {
+        var builder = new ConfigurationBuilder()
+        .AddJsonFile($"appsettings.json", true, true);
+        string connectionString =
+        builder.Build().GetConnectionString("DefaultConnection");
+        return connectionString;
     }
 }

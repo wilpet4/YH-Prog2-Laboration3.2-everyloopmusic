@@ -35,7 +35,7 @@ namespace YH_Prog2_Laboration3._2_everyloopmusic.Models
 
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=everyloopmusic;Integrated Security=True"); // connectionString-variabeln vill inte fungera här
+                optionsBuilder.UseSqlServer(connectionString); // connectionString-variabeln vill inte fungera här
             }
         }
 
