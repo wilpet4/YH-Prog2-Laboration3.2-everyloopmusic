@@ -34,7 +34,8 @@ while (isRunning)
                         Console.WriteLine($"[1] Lägg till låt i spellistan\n" +
                                           $"[2] Ta bort låt i spellistan\n" +
                                           $"[3] Ändra namn på spellistan\n" +
-                                          $"[4] Radera spellistan");
+                                          $"[4] Visa alla låtar i spellistan\n" +
+                                          $"[5] Radera spellistan");
                         if (Int16.TryParse(Console.ReadLine(), out short playlistMenuInput))
                         {
                             switch (playlistMenuInput)
@@ -71,8 +72,8 @@ while (isRunning)
                                     Console.WriteLine(selectedPlaylist.Name);
                                     Console.Write("Vänligen mata in det nya namnet på spellistan: ");
                                     string newName = Console.ReadLine();
-                                    if (newName.Count() < 120) // Hårdkodade Max Length av kolumnen. Inte så bra men det verkade krångligare än jag trodde
-                                    {                          // att läsa Max Length av en kolumn i databasen.
+                                    if (newName.Count() < 120 && newName != "") // Hårdkodade Max Length av kolumnen. Inte så bra men det verkade krångligare än jag trodde
+                                    {                                           // att läsa Max Length av en kolumn i databasen.
                                         selectedPlaylist.Name = newName;
                                         context.Update(selectedPlaylist);
                                         context.SaveChanges();
@@ -81,11 +82,16 @@ while (isRunning)
                                     }
                                     else
                                     {
-                                        Console.WriteLine("Det nya namnet överskrider maxlängden. Försök igen!");
+                                        Console.WriteLine("Det nya namnet överskrider maxlängden eller är innehåller inga tecken. Försök igen!");
                                         Console.ReadKey();
                                     }
                                     break;
                                 case 4:
+                                    Console.Clear();
+                                    Console.WriteLine(handler.FormatTrackSelection(context, selectedPlaylist));
+                                    Console.ReadKey();
+                                    break;
+                                case 5:
                                     Console.WriteLine($"Är du säker att du vill radera [{selectedPlaylist.Name}]? Du kommer inte kunna ångra detta.\n" +
                                                       $"[1] Radera spellistan\n" +
                                                       $"[2] Avbryt");
